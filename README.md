@@ -1,13 +1,7 @@
 ## Project – Agreement management
 Client: PO
-### 1. Task description
-Create ASP.NET Core MVC application to display jQuery data table with appropriate data
-(https://datatables.net/).
-Implement sorting, pagination and basic search functionality.
-Implement basic CRUD functionalities.
-Application should support basic user management (create user, log in, log out).
 
-### 2. Task Details
+### 1. Task Details
 
 Application should support basic logging functionalities:
   * Create user
@@ -56,7 +50,7 @@ When user clicks on delete button he will be prompted with Yes/No dialog. If he 
 from the table will be deleted (also in database).
 After ‘Save’, ‘Delete’ actions table should be refreshed. 
 
-### 3. Sample tables
+### 2. Sample tables
 
 Below are tables names and field that you should use in the application.
 
@@ -88,7 +82,7 @@ User Management tables should be default MVC5 tables. Those tables are created b
 Net MVC project when authentication is enabled.
 Example of those tables: AspNetUsers, AspNetRoles…
 
-### 4. Technology stack
+### 3. Technology stack
   ASP.NET Core MVC 2 or 3, .net 5, .net 6
   SQL Server
   jQuery
@@ -97,6 +91,6 @@ Example of those tables: AspNetUsers, AspNetRoles…
   .Net Framework
   Bootstrap
   
-### 5. Deliverables 
+### 4. Deliverables 
   Full source code of the application (use Git)
   DB dump with the table structure and example data
