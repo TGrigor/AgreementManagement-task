@@ -1,10 +1,12 @@
 using AgreementManagement.Data;
+using AgreementManagement.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Reflection;
 
 namespace AgreementManagement
 {
@@ -20,7 +22,9 @@ namespace AgreementManagement
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDataLayer(Configuration.GetConnectionString("DefaultConnection"));
+            services.AddServiceLayer();
             services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddAutoMapper(typeof(Startup));
             services.AddControllersWithViews();
         }
 

@@ -5,7 +5,6 @@ namespace AgreementManagement.Data.Entities
 {
     public class Product : BaseEntity
     {
-        public int Id { get; set; }
         public int ProductGroupId { get; set; }
         public string ProductDescription { get; set; }
         public string ProductNumber { get; set; }
