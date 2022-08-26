@@ -34,8 +34,17 @@ namespace AgreementManagement.Services.Implementations
             return await result.ProjectTo<AgreementModel>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
         }
 
+        public async Task CreateAgreementAsync(int userId, AgreementCreateModel model)
+        {
+            var newAgreement = _mapper.Map<Agreement>(model);
+            var selectedProduct = _context.Products.FirstOrDefault(s => s.Id == model.ProductId);
+            newAgreement.UserId = userId;
+            newAgreement.ProductPrice = selectedProduct.Price;
+            await _context.Agreements.AddAsync(newAgreement);
+            await _context.SaveChangesAsync();
+        }
+
         private IQueryable<Agreement> GetAll()
            => _context.Agreements.Include(a => a.IdentityUser).Include(a => a.Product).Include(a => a.ProductGroup);
-
     }
 }

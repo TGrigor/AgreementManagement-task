@@ -9,6 +9,7 @@ namespace AgreementManagement.Extensions
         public static IServiceCollection AddServiceLayer(this IServiceCollection services)
         {
             services.AddScoped<IAgreementService, AgreementService>();
+            services.AddScoped<IProductService, ProductService>();
             return services;
         }
 

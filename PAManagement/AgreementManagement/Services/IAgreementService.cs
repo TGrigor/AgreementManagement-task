@@ -6,7 +6,8 @@ namespace AgreementManagement.Services
 {
     public interface IAgreementService
     {
-        public Task<IEnumerable<AgreementModel>> GetAgreementListAsync();
+        Task<IEnumerable<AgreementModel>> GetAgreementListAsync();
         Task<AgreementModel> GetAgreementAsync(int id);
+        Task CreateAgreementAsync(int userId, AgreementCreateModel model);
     }
 }

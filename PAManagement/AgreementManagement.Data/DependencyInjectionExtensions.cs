@@ -22,7 +22,7 @@ namespace AgreementManagement.Data
 
         private static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            services.AddDefaultIdentity<CustomIdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<CustomIdentityUser>()
                     .AddEntityFrameworkStores<AgreementManagementDbContext>();
             return services;
         }
