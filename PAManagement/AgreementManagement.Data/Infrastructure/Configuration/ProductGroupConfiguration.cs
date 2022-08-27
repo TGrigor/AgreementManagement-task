@@ -15,6 +15,8 @@ namespace AgreementManagement.Data.Infrastructure.Configuration
                    .WithOne(m => m.ProductGroup)
                    .HasForeignKey(s => s.ProductGroupId)
                    .OnDelete(DeleteBehavior.NoAction);
+            
+            builder.HasIndex(s => s.GroupCode).IsUnique();
             #endregion
 
             #region Seed Data
