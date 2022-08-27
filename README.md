@@ -7,6 +7,7 @@ Application notes:
  > 3)   Also you can find db schema in AgreementManagement.SQL project (dbo) folder.
  > 4)   To made ModelBuilder configurations please take a look AgreementManagementDbContext.designer.cs file.
  > 5)   All entities and db related logic stored on AgreementManagement.Data project.
+ > 6)   Filtering, Pagination and Sorting made in front end side (not have a much time) using JqueryDatatable but it will be better to make and back end side.
 
 Task Mismatches:
  > 1) Plase fix "logging" keyword becouse its make misunderstanding that developer need to implement application logging instead of having login registration
