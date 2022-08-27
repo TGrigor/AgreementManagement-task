@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore.InMemory;
 using System;
+using AgreementManagement.Data.Infrastructure.SeedData;
 
 namespace AgreementManagement.Data
 {
@@ -11,10 +13,18 @@ namespace AgreementManagement.Data
     {
         public static IServiceCollection AddDataLayer(this IServiceCollection services, string connectionString)
         {
+            bool isInMemory = string.IsNullOrEmpty(connectionString);
             services.AddDbContext<AgreementManagementDbContext>(optionBuilder => {
-                optionBuilder.UseSqlServer(
-                    connectionString ?? throw new ArgumentException("Connection string is not passed"),
-                    o => o.EnableRetryOnFailure(3));
+                if (isInMemory)
+                {
+                    optionBuilder.UseInMemoryDatabase("AgreementManagementDB-InMemory");
+                }
+                else
+                {
+                    optionBuilder.UseSqlServer(
+                        connectionString ?? throw new ArgumentException("Connection string is not passed"),
+                        o => o.EnableRetryOnFailure(3));
+                }
             });
             services.AddRepositories();
             return services;
@@ -31,7 +41,14 @@ namespace AgreementManagement.Data
         {
             using var serviceScope = app.ApplicationServices.CreateScope();
             var context = serviceScope.ServiceProvider.GetService<AgreementManagementDbContext>();
-            context?.Database.Migrate();
+            if (context.Database.IsSqlServer())
+            {
+                context?.Database.Migrate();
+            }
+            else
+            {
+                context.SeedTestData();
+            }
             return app;
         }
     }
