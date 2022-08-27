@@ -28,11 +28,14 @@ namespace AgreementManagement.Services.Implementations
             return await result.ProjectTo<AgreementModel>(_mapper.ConfigurationProvider).ToListAsync();
         }
 
-        public async Task<AgreementModel> GetAgreementAsync(int id)
+        public async Task<T> GetAgreementAsync<T>(int id)
         {
             var result = GetAll().Where(s => s.Id == id);
-            return await result.ProjectTo<AgreementModel>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+            return await result.ProjectTo<T>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
         }
+
+        public async Task<bool> IsAgreementExist(int id)
+             => await _context.Agreements.AnyAsync(s => s.Id == id);
 
         public async Task CreateAgreementAsync(int userId, AgreementCreateModel model)
         {
@@ -41,6 +44,23 @@ namespace AgreementManagement.Services.Implementations
             newAgreement.UserId = userId;
             newAgreement.ProductPrice = selectedProduct.Price;
             await _context.Agreements.AddAsync(newAgreement);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAgreementAsync(int userId, AgreementEditModel model)
+        {
+            var agreementEditModel = _mapper.Map<Agreement>(model);
+            var selectedProduct = _context.Products.FirstOrDefault(s => s.Id == model.ProductId);
+            agreementEditModel.UserId = userId;
+            agreementEditModel.ProductPrice = selectedProduct.Price;
+            _context.Update(agreementEditModel);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveAgreementAsync(int agreementId)
+        {
+            var agreement = await _context.Agreements.FindAsync(agreementId);
+            _context.Agreements.Remove(agreement);
             await _context.SaveChangesAsync();
         }
 

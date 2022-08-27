@@ -16,6 +16,9 @@ namespace AgreementManagement.Profiles
                 .ForMember(dest => dest.ProductPrice, opt => opt.MapFrom(src => src.ProductPrice))
                 .ForMember(dest => dest.NewPrice, opt => opt.MapFrom(src => src.NewPrice));
 
+            CreateMap<Agreement, AgreementEditModel>().ReverseMap();
+            CreateMap<Agreement, AgreementDeleteModel>();
+            
             CreateMap<Product, KeyValueModel<string>>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.ProductNumber));

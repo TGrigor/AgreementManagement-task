@@ -18,17 +18,15 @@ namespace AgreementManagement.Controllers
 {
     public class AgreementsController : Controller
     {
+        private readonly IMapper _mapper;
         private readonly IAgreementService _agreementService;
         private readonly IProductService _productService;
-        private readonly IMapper _mapper;
-        private readonly AgreementManagementDbContext _context;
 
-        public AgreementsController(IAgreementService agreementService, IProductService productService, IMapper mapper, AgreementManagementDbContext context)
+        public AgreementsController(IMapper mapper, IProductService productService, IAgreementService agreementService)
         {
+            _mapper = mapper;
             _agreementService = agreementService;
             _productService = productService;
-            _mapper = mapper;
-            _context = context;
         }
 
         // GET: Agreements
@@ -43,7 +41,7 @@ namespace AgreementManagement.Controllers
                 return NotFound();
             }
 
-            var agreement = await _agreementService.GetAgreementAsync(id.Value);
+            var agreement = await _agreementService.GetAgreementAsync<AgreementModel>(id.Value);
 
             if (agreement == null)
             {
@@ -78,8 +76,8 @@ namespace AgreementManagement.Controllers
         }
 
 
-
         // GET: Agreements/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -87,53 +85,37 @@ namespace AgreementManagement.Controllers
                 return NotFound();
             }
 
-            var agreement = await _context.Agreements.FindAsync(id);
-            if (agreement == null)
+            var model = await _agreementService.GetAgreementAsync<AgreementEditModel>(id.Value);
+            if (model == null)
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", agreement.UserId);
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", agreement.ProductId);
-            ViewData["ProductGroupId"] = new SelectList(_context.ProductGroups, "Id", "Id", agreement.ProductGroupId);
-            return View(agreement);
+            model.Products = _mapper.Map<List<SelectListItem>>(await _productService.GetProductsSimpleData());
+            model.ProductGroups = _mapper.Map<List<SelectListItem>>(await _productService.GetProductGroupsSimpleData());
+            return View(model);
         }
 
         // POST: Agreements/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,ProductId,ProductGroupId,EffectiveDate,ExpirationDate,ProductPrice,NewPrice,Id,IsDeleted,CreatedOn,UpdatedOn")] Agreement agreement)
+        public async Task<IActionResult> Edit(int id, AgreementEditModel model)
         {
-            if (id != agreement.Id)
+            if (!await _agreementService.IsAgreementExist(id))
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(agreement);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AgreementExists(agreement.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                var currentUserId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                await _agreementService.UpdateAgreementAsync(currentUserId, model);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", agreement.UserId);
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", agreement.ProductId);
-            ViewData["ProductGroupId"] = new SelectList(_context.ProductGroups, "Id", "Id", agreement.ProductGroupId);
-            return View(agreement);
+
+            model.Products = _mapper.Map<List<SelectListItem>>(await _productService.GetProductsSimpleData());
+            model.ProductGroups = _mapper.Map<List<SelectListItem>>(await _productService.GetProductGroupsSimpleData());
+            return View(model);
         }
 
         // GET: Agreements/Delete/5
@@ -144,17 +126,13 @@ namespace AgreementManagement.Controllers
                 return NotFound();
             }
 
-            var agreement = await _context.Agreements
-                .Include(a => a.IdentityUser)
-                .Include(a => a.Product)
-                .Include(a => a.ProductGroup)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (agreement == null)
+            var model = await _agreementService.GetAgreementAsync<AgreementDeleteModel>(id.Value);
+            if (model == null)
             {
                 return NotFound();
             }
 
-            return View(agreement);
+            return View(model);
         }
 
         // POST: Agreements/Delete/5
@@ -162,15 +140,13 @@ namespace AgreementManagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var agreement = await _context.Agreements.FindAsync(id);
-            _context.Agreements.Remove(agreement);
-            await _context.SaveChangesAsync();
+            var model = await _agreementService.GetAgreementAsync<AgreementDeleteModel>(id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+            await _agreementService.RemoveAgreementAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool AgreementExists(int id)
-        {
-            return _context.Agreements.Any(e => e.Id == id);
         }
     }
 }
