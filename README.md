@@ -1,6 +1,13 @@
 ## Project – Agreement management
 Client: PO
 
+Application notes:
+ > 1) By default, application uses In memory database with seeded test data. (Please specify DefaultConnection in appsettings.json file to start using SQL server)
+ > 2)   You can find SQL Server mdf file by this "~\PAManagement\AgreementManagement.SQL\AgreementManagementDB.mdf" path
+ > 3)   Also you can find db schema in AgreementManagement.SQL project (dbo) folder.
+ > 4)   To made ModelBuilder configurations please take a look AgreementManagementDbContext.designer.cs file.
+ > 5)   All entities and db related logic stored on AgreementManagement.Data project.
+
 ### 1. Task Details
 
 Application should support basic logging functionalities:
