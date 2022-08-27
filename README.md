@@ -1,6 +1,22 @@
 ## Project – Agreement management
 Client: PO
 
+Application notes:
+ > 1) By default, application uses In memory database with seeded test data. (Please specify DefaultConnection in appsettings.json file to start using SQL server)
+ > 2)   You can find SQL Server mdf file by this "~\PAManagement\AgreementManagement.SQL\AgreementManagementDB.mdf" path
+ > 3)   Also you can find db schema in AgreementManagement.SQL project (dbo) folder.
+ > 4)   To made ModelBuilder configurations please take a look AgreementManagementDbContext.designer.cs file.
+ > 5)   All entities and db related logic stored on AgreementManagement.Data project.
+ > 6)   Filtering, Pagination and Sorting made in front end side (not have a much time) using JqueryDatatable but it will be better to make and back end side.
+
+Task Mismatches:
+ > 1) Plase fix "logging" keyword becouse its make misunderstanding that developer need to implement application logging instead of having login registration
+ 
+  ![Screenshot 2022-08-27 134031](https://user-images.githubusercontent.com/20052422/187029003-8560fc37-4382-4b1c-9b29-215aaa515034.png)
+ > 2) Please fix screenshot that show Group and Product must be an imput but they must be an (select control)
+ 
+  ![Screenshot 2022-08-27 140930](https://user-images.githubusercontent.com/20052422/187028986-fe741221-6bea-4370-9c20-a58058ecd57e.png)
+
 ### 1. Task Details
 
 Application should support basic logging functionalities:
