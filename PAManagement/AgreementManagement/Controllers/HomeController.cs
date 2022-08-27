@@ -16,7 +16,7 @@ namespace AgreementManagement.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction(nameof(AgreementsController.Index), "Agreements");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

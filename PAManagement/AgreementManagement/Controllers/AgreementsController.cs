@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace AgreementManagement.Controllers
 {
+    [Authorize]
     public class AgreementsController : Controller
     {
         private readonly IMapper _mapper;
@@ -52,14 +53,13 @@ namespace AgreementManagement.Controllers
         }
 
         // GET: Agreements/Create
-        [Authorize]
+        
         public async Task<IActionResult> Create()
             => View(new AgreementCreateModel(_mapper.Map<List<SelectListItem>>(await _productService.GetProductsSimpleData()),
                                              _mapper.Map<List<SelectListItem>>(await _productService.GetProductGroupsSimpleData())));
 
         // POST: Agreements/Create
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AgreementCreateModel model)
         {
@@ -77,7 +77,6 @@ namespace AgreementManagement.Controllers
 
 
         // GET: Agreements/Edit/5
-        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -97,7 +96,6 @@ namespace AgreementManagement.Controllers
 
         // POST: Agreements/Edit/5
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, AgreementEditModel model)
         {
