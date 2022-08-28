@@ -10,6 +10,9 @@
 <table class="table">
     <thead>
         <tr>
+            <th>@Html.DisplayNameFor(model => model.Username)</th>
+            <th>@Html.DisplayNameFor(model => model.ProductGroupCode)</th>
+            <th>@Html.DisplayNameFor(model => model.ProductNumber)</th>
             <th>@Html.DisplayNameFor(model => model.EffectiveDate)</th>
             <th>@Html.DisplayNameFor(model => model.ExpirationDate)</th>
             <th>@Html.DisplayNameFor(model => model.ProductPrice)</th>
@@ -40,6 +43,19 @@
                  { targets: '_all', orderable: true }],
                 "columns": [
                       //TODO: We must use property names instead of using Text.
+                      { "data": "username",  "name": "Username", "autoWidth": true },
+                      {
+                          "render": function (data, type, full, meta)
+                          { 
+                              return '<span data-toggle="tooltip" title="' + full.productGroupDescrption + '">' + full.productGroupCode + '</span>';
+                          }
+                      },
+                      {
+                          "render": function (data, type, full, meta)
+                          { 
+                              return '<span data-toggle="tooltip" title="' + full.productDescrption + '">' + full.productNumber + '</span>';
+                          }
+                      },
                       { "data": "effectiveDate",  "name": "EffectiveDate", "autoWidth": true },
                       { "data": "expirationDate", "name": "ExpirationDate", "autoWidth": true },
                       { "data": "productPrice",   "name": "ProductPrice", "autoWidth": true },

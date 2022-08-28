@@ -12,7 +12,9 @@ namespace AgreementManagement.Profiles
             CreateMap<Agreement, AgreementModel>()
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.IdentityUser.UserName))
                 .ForMember(dest => dest.ProductGroupCode, opt => opt.MapFrom(src => src.ProductGroup.GroupCode))
+                .ForMember(dest => dest.ProductGroupDescrption, opt => opt.MapFrom(src => src.ProductGroup.GroupDescription))
                 .ForMember(dest => dest.ProductNumber, opt => opt.MapFrom(src => src.Product.ProductNumber))
+                .ForMember(dest => dest.ProductDescrption, opt => opt.MapFrom(src => src.Product.ProductDescription))
                 .ForMember(dest => dest.ProductPrice, opt => opt.MapFrom(src => src.ProductPrice))
                 .ForMember(dest => dest.NewPrice, opt => opt.MapFrom(src => src.NewPrice));
 
