@@ -32,7 +32,7 @@ namespace AgreementManagement.Controllers
 
         // GET: Agreements
         public async Task<IActionResult> Index()
-            => View(await _agreementService.GetAgreementListAsync());
+            => View();
 
         // GET: Agreements/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -53,7 +53,7 @@ namespace AgreementManagement.Controllers
         }
 
         // GET: Agreements/Create
-        
+
         public async Task<IActionResult> Create()
             => View(new AgreementCreateModel(_mapper.Map<List<SelectListItem>>(await _productService.GetProductsSimpleData()),
                                              _mapper.Map<List<SelectListItem>>(await _productService.GetProductGroupsSimpleData())));
@@ -145,6 +145,30 @@ namespace AgreementManagement.Controllers
             }
             await _agreementService.RemoveAgreementAsync(id);
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost, ActionName("LoadAgreementJsonData")]
+        public async Task<JsonResult> LoadAgreementJsonData()
+        {
+            //Form Data
+            var model = new DataTableDataModel<List<AgreementModel>>()
+            {
+                Draw = Request.Form["draw"].FirstOrDefault(),
+                Length = Request.Form["length"].FirstOrDefault(),
+                SearchValue = Request.Form["search[value]"].FirstOrDefault(),
+                SortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault(),
+                SortColumnDir = Request.Form["order[0][dir]"].FirstOrDefault(),
+                Start = Request.Form["start"].FirstOrDefault()
+            };
+
+            var agreements = await _agreementService.GetAgreementPaginatedData(model);
+
+            return Json(new { 
+                                draw = agreements.Draw, 
+                                recordsFiltered = agreements.RecordsTotalCount, 
+                                recordsTotal = agreements.RecordsTotalCount, 
+                                data = agreements.Data
+            });
         }
     }
 }

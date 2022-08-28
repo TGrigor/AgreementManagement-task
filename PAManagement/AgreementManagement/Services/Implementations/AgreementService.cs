@@ -4,6 +4,7 @@ using AgreementManagement.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,6 +27,45 @@ namespace AgreementManagement.Services.Implementations
         {
             var result = GetAll();
             return await result.ProjectTo<AgreementModel>(_mapper.ConfigurationProvider).ToListAsync();
+        }
+
+        public async Task<DataTableDataModel<List<AgreementModel>>> GetAgreementPaginatedData(DataTableDataModel<List<AgreementModel>> model)
+        {
+            //Paging Size (10,20,50,100)    
+            int pageSize = model.Length != null ? Convert.ToInt32(model.Length) : 0;
+            int skip = model.Start != null ? Convert.ToInt32(model.Start) : 0;
+
+            // Getting all Agreement data 
+            var queryResult = GetAll();
+            var agreementsQuery = queryResult.ProjectTo<AgreementModel>(_mapper.ConfigurationProvider);
+
+            //Sorting    
+            if (!(string.IsNullOrEmpty(model.SortColumn) && string.IsNullOrEmpty(model.SortColumnDir)))
+            {
+                //TODO: It will be better to use Enum for asc and desc
+                if (model.SortColumnDir.ToString() == "desc")
+                {
+                    agreementsQuery = agreementsQuery.OrderByDescending(s => EF.Property<object>(s, model.SortColumn));
+                }
+                else
+                {
+                    agreementsQuery = agreementsQuery.OrderBy(s => EF.Property<object>(s, model.SortColumn));
+                }
+            }
+
+            //Search    
+            if (!string.IsNullOrEmpty(model.SearchValue))
+            {
+                agreementsQuery = agreementsQuery.Where(m => m.ProductNumber.Contains(model.SearchValue) || 
+                                                             m.ProductGroupCode.Contains(model.SearchValue) ||
+                                                             m.Username.Contains(model.SearchValue));
+            }
+
+            model.RecordsTotalCount = agreementsQuery.Count();
+
+            //Paging     
+            model.Data = await agreementsQuery.Skip(skip).Take(pageSize).ToListAsync();
+            return model;
         }
 
         public async Task<T> GetAgreementAsync<T>(int id)

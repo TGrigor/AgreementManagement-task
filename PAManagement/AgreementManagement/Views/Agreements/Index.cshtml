@@ -10,42 +10,50 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.EffectiveDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ExpirationDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NewPrice)
-            </th>
-            <th></th>
+            <th>@Html.DisplayNameFor(model => model.EffectiveDate)</th>
+            <th>@Html.DisplayNameFor(model => model.ExpirationDate)</th>
+            <th>@Html.DisplayNameFor(model => model.ProductPrice)</th>
+            <th>@Html.DisplayNameFor(model => model.NewPrice)</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.EffectiveDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpirationDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProductPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NewPrice)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
     </tbody>
 </table>
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        $('.table').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "filter": true,
+                "orderMulti": false,
+                "pageLength": 5,
+                "ajax": {
+                    "url": "/Agreements/LoadAgreementJsonData",
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                "columnDefs":
+                [{ targets: [4], orderable: false },
+                 { targets: '_all', orderable: true }],
+                "columns": [
+                      //TODO: We must use property names instead of using Text.
+                      { "data": "effectiveDate",  "name": "EffectiveDate", "autoWidth": true },
+                      { "data": "expirationDate", "name": "ExpirationDate", "autoWidth": true },
+                      { "data": "productPrice",   "name": "ProductPrice", "autoWidth": true },
+                      { "data": "newPrice", "name": "NewPrice", "autoWidth": true },
+                      {
+                          "render": function (data, type, full, meta)
+                          { 
+                              return '<a class="btn btn-info" href="/Agreements/Edit/' + full.id + '">Edit</a>' + " | "+
+                                     '<a class="btn btn-danger" href="/Agreements/Delete/' + full.id + '">Delete</a>';
+                          }
+                      },
+                ]
+
+            });
+    });
+</script>
+}
