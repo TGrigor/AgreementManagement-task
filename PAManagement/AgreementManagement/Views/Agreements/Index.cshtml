@@ -39,7 +39,7 @@
                     "datatype": "json"
                 },
                 "columnDefs":
-                [{ targets: [4], orderable: false },
+                [{ targets: [7], orderable: false },
                  { targets: '_all', orderable: true }],
                 "columns": [
                       //TODO: We must use property names instead of using Text.
@@ -63,7 +63,7 @@
                       {
                           "render": function (data, type, full, meta)
                           { 
-                              return '<a class="btn btn-info" href="/Agreements/Edit/' + full.id + '">Edit</a>' + " | "+
+                              return '<a class="btn btn-info" href="/Agreements/Edit/' + full.id + '">Edit</a>' +
                                      '<a class="btn btn-danger" href="/Agreements/Delete/' + full.id + '">Delete</a>';
                           }
                       },
